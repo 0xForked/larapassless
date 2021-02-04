@@ -15,30 +15,84 @@
                 <p class="auth-subtitle mb-5">
                     Input your data to register to our website.
                 </p>
+                @if (request()->query('action') !== 'LINK_SENT')
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
+                        <label class="visually-hidden" for="autoSizingInputGroup">
+                            Username
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                name="email"
+                                class="form-control form-control-xl @error('email') is-invalid @enderror"
+                                placeholder="Email address"
+                                value="{{ old('email') }}" 
+                                required 
+                                autocomplete="email"
+                            >
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
 
-                <form action="#">
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="email" class="form-control form-control-xl" placeholder="Email address">
-                        <div class="form-control-icon">
-                            <i class="bi bi-envelope"></i>
+                        <label class="visually-hidden" for="autoSizingInputGroup">
+                            Username
+                        </label>
+                        <div class="input-group mt-3">
+                            <div class="input-group-text">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <input 
+                                type="text" 
+                                name="name"
+                                class="form-control form-control-xl @error('name') is-invalid @enderror"
+                                placeholder="Full name"
+                                value="{{ old('name') }}" 
+                                required 
+                                autocomplete="name"
+                            >
+                            @error('name')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
+                       
+                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3">Submit</button>
+                    </form>
+                    <div class="text-center mt-5 text-lg fs-4">
+                        <p class="text-gray-600">
+                            Already have an account?
+                            <a href="{{ route('login') }}" class="font-bold">
+                                Sign in
+                            </a>
+                        </p>
                     </div>
-                    <div class="form-group position-relative has-icon-left mt-3">
-                        <input type="text" class="form-control form-control-xl" placeholder="Full name">
-                        <div class="form-control-icon">
-                            <i class="bi bi-person"></i>
-                        </div>
+                @else
+                    Pleace check your email address <b> <u>{{ request()->query('email') }}</u>!</b>
+
+                    <div class="text-center mt-5 text-lg fs-4">
+                        <p class="text-gray-600">
+                            Didn't receive a magic link?
+                            <a 
+                                href="{{ route('resend.link', [
+                                    'path' => request()->segment(FIRST_ITERATION),
+                                    'email' => request()->query('email')
+                                ]) }}" 
+                                class="font-bold"
+                            >
+                                Resend
+                            </a>
+                        </p>
                     </div>
-                    <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3">Submit</button>
-                </form>
-                <div class="text-center mt-5 text-lg fs-4">
-                    <p class="text-gray-600">
-                        Already have an account?
-                        <a href="{{ route('login') }}" class="font-bold">
-                            Sign in
-                        </a>.
-                    </p>
-                </div>
+                @endif
+               
             </div>
         </div>
         <div class="col-lg-7 d-none d-lg-block">

@@ -15,24 +15,61 @@
                 <p class="auth-subtitle mb-5">
                     We'll will sent you an magic link to access your account.
                 </p>
-
-                <form action="#">
-                    <div class="form-group position-relative has-icon-left">
-                        <input type="email" class="form-control form-control-xl" placeholder="Email address">
-                        <div class="form-control-icon">
-                            <i class="bi bi-envelope"></i>
+                
+                @if (request()->query('action') !== 'LINK_SENT')
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                        <label class="visually-hidden" for="autoSizingInputGroup">
+                            Username
+                        </label>
+                        <div class="input-group">
+                            <div class="input-group-text">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <input 
+                                type="email" 
+                                name="email"
+                                class="form-control form-control-xl @error('email') is-invalid @enderror"
+                                placeholder="Email address"
+                                value="{{ old('email') }}" 
+                                required 
+                                autocomplete="email"
+                            >
+                            @error('email')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
+                        <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3">Submit</button>
+                    </form>
+                    <div class="text-center mt-5 text-lg fs-4">
+                        <p class="text-gray-600">
+                            Don't have an account?
+                            <a href="{{ route('register') }}" class="font-bold">
+                                Sign up
+                            </a>
+                        </p>
                     </div>
-                    <button class="btn btn-primary btn-block btn-lg shadow-lg mt-3">Submit</button>
-                </form>
-                <div class="text-center mt-5 text-lg fs-4">
-                    <p class="text-gray-600">
-                        Don't have an account?
-                        <a href="{{ route('register') }}" class="font-bold">
-                            Sign up
-                        </a>.
-                    </p>
-                </div>
+                @else
+                    Pleace check your email address <b> <u>{{ request()->query('email') }}</u>!</b>
+
+                    <div class="text-center mt-5 text-lg fs-4">
+                        <p class="text-gray-600">
+                            Didn't receive a magic link?
+                            <a 
+                                href="{{ route('resend.link', [
+                                    'path' => request()->segment(FIRST_ITERATION),
+                                    'email' => request()->query('email')
+                                ]) }}" 
+                                class="font-bold"
+                            >
+                                Resend
+                            </a>
+                        </p>
+                    </div>
+                @endif
+
             </div>
         </div>
         <div class="col-lg-7 d-none d-lg-block">
